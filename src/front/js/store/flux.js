@@ -83,8 +83,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({
 				  token: "",
 				  user: {},
-				  posts: [],
-				  userPosts: []
 				});
 				localStorage.removeItem("token");
 				localStorage.removeItem("user");

@@ -9,13 +9,21 @@ export const Login = () => {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate();
 
-	function handleLogin() {
-		actions.login(email, password);
+	// function handleLogin() {
+	// 	if (store.token && store.token != "" && store.token != undefined) {
+	// 		actions.login(email, password);
+	// 		console.log("logedin")
+	// 		navigate("/")
+	// 	} else if (email && password == "") {
+	// 		alert("Cannot be empty")
+	// 		console.log("logedin")
+	// 	}
+		
 
-	}
+	// }
 
 	useEffect(() => {
-		if (store.token && store.token != "" && store.token != undefined) navigate("/");
+		
 	});
 
 	// const handleLogin = () => {
@@ -46,14 +54,19 @@ export const Login = () => {
 	return (
 		<div className="text-center mt-5 w-50 aligne-content-center ">
 			<h1>Login</h1>
-			{store.token && store.token != "" && store.token != undefined ? navigate("/") : (
 				< div >
 					<input type="email" className="form-control" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 					<input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-					<button type="button" className="btn btn-primary" onClick={handleLogin}>Login</button>
+					<button type="button" className="btn btn-primary" onClick={(e)=>{
+						e.preventDefault()
+						if (email === "" || password === ""){
+							alert("input cannot be empty")
+						} else {
+							actions.login(email, password);
+							navigate("/home")
+						}
+					}}>Login</button>
 				</div>
-			)
-			}
 		</div >
 
 	);
