@@ -39,6 +39,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({accessToken:token})
 			},
 
+			signup: async (email, password) => {
+				try {
+				  const store = getStore();
+				  const response = await fetch(apiUrl + "/api/signup", {
+					method: "POST",
+					body: JSON.stringify({
+					  email: email,
+					  password: password
+					}),
+					headers: {
+					  "Content-Type": "application/json"
+					}
+				  });
+				  const body = await response.json();
+				  if (response.ok) {
+					console.log("Successful")
+				  } else {
+					console.log("singup in unsuccessful");
+				  }
+				} catch (error) {
+				  console.log(error);
+				}
+			  },
+
+
 			login: async (email, password) => {
 				try {
 				  const store = getStore();

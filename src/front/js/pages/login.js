@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../styles/home.css";
 
 export const Login = () => {
@@ -52,7 +52,7 @@ export const Login = () => {
 
 
 	return (
-		<div className="text-center mt-5 w-50 aligne-content-center ">
+		<div className="text-center mt-5 w-50 aligne-content-center mr-20">
 			<h1>Login</h1>
 				< div >
 					<input type="email" className="form-control" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -66,6 +66,10 @@ export const Login = () => {
 							navigate("/home")
 						}
 					}}>Login</button>
+					<Link to="/signup">
+						<button type="button" className="btn btn-primary ml-2" >Signup</button>
+					</Link>
+					
 				</div>
 		</div >
 

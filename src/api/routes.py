@@ -21,8 +21,9 @@ api = Blueprint('api', __name__)
 def creat_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if email != "test" or password != "test":
+    if email != email or password != password:
         return jsonify({"msg": "Bad email or password"}), 401
+    
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
@@ -72,7 +73,7 @@ def sign_up():
     except Exception as error:
         db.session.rollback()
         print(error)
-        return jsonify(error), 400
+        return jsonify("There is an error"), 400
 
 
 @api.route("/login", methods=["POST"])
