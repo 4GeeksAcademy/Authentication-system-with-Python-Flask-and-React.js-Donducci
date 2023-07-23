@@ -6,35 +6,20 @@ import { Link, useParams } from "react-router-dom";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
-  const [logoutSuccess, setLogoutSuccess] = useState(false);
   const navigate = useNavigate();
   const isMountedRef = useRef(true); // Create a ref to track mounted state
 
   useEffect(() => {
-    return () => {
-      isMountedRef.current = false; // Set isMounted to false on unmount
-    };
-  }, []);
+  if (store.token && store.token !="" && store.toke !=undefined){
 
-  const handleLogoutClick = () => {
-    actions.logout();
-    setLogoutSuccess(true);
-    setTimeout(() => {
-      if (isMountedRef.current) {
-        setLogoutSuccess(false);
-        navigate("/");
-      }
-    }, 1000);
-  };
+  }
+  }, [store.token]);
+
+  
 
   return (
     <div className="text-center mt-5">
       <div className="ml-auto">
-        <Link to="/">
-          <button className="logout-button btn-btn danger" onClick={handleLogoutClick}>
-            Log Out
-          </button>
-        </Link>
       </div>
       <h1>Home</h1>
     </div>

@@ -1,34 +1,35 @@
-import React, {useState, useContext}from "react";
+import React, { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-	const [logoutSuccess, setLogoutSuccess] = useState(false);
 	const navigate = useNavigate();
-	const { actions } = useContext(Context);
+	const { store, actions } = useContext(Context);
 
-	const handleLogoutClick = () => {
-		actions.logout();
-		setLogoutSuccess(true);
-		setTimeout(() => {
-		  setLogoutSuccess(false);
-		  navigate("/");
-		}, 1000);
-	  };
 
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container">
+				<Link to="/">
+					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
+				</Link>
+				<div className="ml-auto">
+					{!store.token ? (
 						<Link to="/">
-							<span className="navbar-brand mb-0 h1">React Boilerplate</span>
+							<button className="btn btn-primary">log in</button>
 						</Link>
-					<div className="ml-auto">
-						<Link to="/">
-						<button className="logout-button" onClick={handleLogoutClick}>
-							Log Out
+					) : (
+						<button
+							onClick={() => actions.logout()}
+							className="btn btn-primary"
+						>
+							log out
 						</button>
-						</Link>
-					</div>
+					)}
+					<Link to="/signup">
+						<button className="btn btn-primary">Sign up</button>
+					</Link>
+				</div>
 			</div>
 		</nav>
 	);

@@ -2,7 +2,7 @@ const apiUrl = process.env.BACKEND_URL
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			token: "",
+			token: null,
 			user: {},
 			message: null,
 			demo: [
@@ -17,145 +17,83 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			]
-			
+
 		},
+
+
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			userLogin: async (email,password)=>{
-				const resp = await getActions().apiFetch("/login", "POST", {email,password})
-				console.log({email,password})
-				if (resp.code >= 400) {
-					return resp
-				}
-				setStore({accessToken:resp.data.accessToken})
-				localStorage.setItem("accessToken", resp.data.accessToken)
-				return resp
-			},
-			loadToken(){
-				let token = localStorage.getItem("accessToken")
-				setStore({accessToken:token})
-			},
-
-			signup: async (email, password) => {
-				try {
-				  const store = getStore();
-				  const response = await fetch(apiUrl + "/api/signup", {
-					method: "POST",
-					body: JSON.stringify({
-					  email: email,
-					  password: password
-					}),
-					headers: {
-					  "Content-Type": "application/json"
-					}
-				  });
-				  const body = await response.json();
-				  if (response.ok) {
-					console.log("Successful")
-				  } else {
-					console.log("singup in unsuccessful");
-				  }
-				} catch (error) {
-				  console.log(error);
-				}
-			  },
-
-
-			login: async (email, password) => {
-				try {
-				  const store = getStore();
-				  const response = await fetch(apiUrl + "/api/token", {
-					method: "POST",
-					body: JSON.stringify({
-					  email: email,
-					  password: password
-					}),
-					headers: {
-					  "Content-Type": "application/json"
-					}
-				  });
-		
-				  const body = await response.json();
-				  if (response.ok) {
-					setStore({
-					  token: body.token,
-					  user: body.user
-					});
-					localStorage.setItem("token", JSON.stringify(body.token));
-					localStorage.setItem("user", JSON.stringify(body.user));
-					return body;
-				  } else {
-					console.log("Log in unsuccessful");
-				  }
-				} catch (error) {
-				  console.log(error);
-				}
-			  },
-		
-			  checkUser: () => {
-				if (localStorage.getItem("token")) {
-				  setStore({
-					token: JSON.parse(localStorage.getItem("token")),
-					user: JSON.parse(localStorage.getItem("user"))
-				  });
-				}
-			  },
-
 			logout: () => {
+				sessionStorage.removeItem("token");
 				setStore({
-				  token: "",
-				  user: {},
-				});
-				localStorage.removeItem("token");
-				localStorage.removeItem("user");
-			  },
-		
+					token: null
 
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await getActions().apiFetch("/hello")
-					setStore({ message: resp.data.message })
-					// don't forget to return something, that is how the async resolves
-					// return data;
-				}catch(error){
-					console.log("Error loading message from backend", error)
-				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
 				});
 
-				//reset the global store
-				setStore({ demo: demo });
 			},
-			apiFetch: async (endpoint,method="GET",body={}) => {
-				let resp = await fetch(apiUrl + endpoint, method == "GET" ? undefined :{
-					method,
-					body: JSON.stringify(body),
-					headers:{
-						"Content-Type":"application/json"
+
+			syncTokenfromSessionStorage: () => {
+				const token = sessionStorage.getItem("token");
+				if (token && token !== undefined && token !== "")
+					setStore({ token: token });
+			},
+
+			userLogin: async (email, password) => {
+				const opts = {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: email,
+						password: password,
+					}),
+				};
+				try {
+					const response = await fetch(
+						process.env.BACKEND_URL + "/api/token",
+						opts
+					);
+					if (response.status !== 200) {
+						alert("Response was not a code 200.");
+						return false;
 					}
-				})
-				if(!resp.ok){
-					console.error(`${resp.status}: ${resp.statusText}`)
-					return {code:resp.status, error:`${resp.status}: ${resp.statusText}`}
+					const data = await response.json();
+					console.log("backend token: " + data);
+					sessionStorage.setItem("token", data.access_token);
+					setStore({ token: data.access_token });
+					return true;
+				} catch (error) {
+					console.error("Error! Description: " + error);
 				}
-				let data = await resp.json()
-				return {code:resp.status, data:data}
+			},
+		},
+
+		signup: async (email, password) => {
+			try {
+				const store = getStore();
+				const response = await fetch(apiUrl + "/api/signup", {
+					method: "POST",
+					body: JSON.stringify({
+						email: email,
+						password: password
+					}),
+					headers: {
+						"Content-Type": "application/json"
+					}
+				});
+				const body = await response.json();
+				if (response.ok) {
+					console.log("Successful")
+				} else {
+					console.log("singup in unsuccessful");
+				}
+			} catch (error) {
+				console.log(error);
 			}
-		}
-	};
+		},
+	}
 };
+
 
 export default getState;
