@@ -9,11 +9,11 @@ export const Home = () => {
   const navigate = useNavigate();
   const isMountedRef = useRef(true); // Create a ref to track mounted state
 
-  useEffect(() => {
-  if (store.token && store.token !="" && store.toke !=undefined){
+  // useEffect(() => {
+  // if (store.token && store.token !="" && store.toke !=undefined){
 
-  }
-  }, [store.token]);
+  // }
+  // }, [store.token]);
 
   
 

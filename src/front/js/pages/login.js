@@ -30,11 +30,7 @@ export const Login = () => {
 						actions.userLogin(email, password);
 						navigate("/home")
 					}
-				}}>Login</button>
-				<Link to="/signup">
-					<button type="button" className="btn btn-primary ml-2" >Signup</button>
-				</Link>
-
+				}}>Submit</button>
 			</div>
 		</div >
 

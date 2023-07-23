@@ -3,7 +3,8 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 export const Signup = () => {
-	const { store, actions } = useContext(Context);
+	const { store, actions } = useContext(Context); 
+	console.log("actions", actions)
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
     const navigate = useNavigate();
@@ -19,9 +20,9 @@ export const Signup = () => {
 							alert("input cannot be empty")
 						} else {
 							actions.signup(email, password);
-							navigate("/login")
+							navigate("/home")
 						}
-					}}>Signup</button>
+					}}>Submit</button>
 				</div>
 		</div >
 
