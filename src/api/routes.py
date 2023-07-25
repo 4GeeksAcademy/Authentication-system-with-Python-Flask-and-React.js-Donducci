@@ -72,12 +72,19 @@ def sign_up():
         return jsonify("There is an error"), 400
 
 
+# Define the login route
 @api.route("/login", methods=["POST"])
 def login():
-    body = request.json
+    if not request.is_json:
+        return jsonify({"message": "Invalid content type (must be application/json)"}), 400
+
+    body = request.get_json()
+    if not all(key in body for key in ["email", "password"]):
+        return jsonify({"message": "Missing email or password"}), 400
+
     user = User.query.filter_by(email=body["email"]).one_or_none()
     if user is None or not user.check_password(body["password"]):
-        return "Invalid credentials", 401
+        return jsonify({"message": "Invalid credentials"}), 401
 
     token = create_access_token(identity=user.id)
     return jsonify({
